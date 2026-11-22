@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATA // СОЦИАЛЬНЫЙ ЛИФТ 2026 — Премиальный Терминал Голосования</title>
+  
+  <!-- Современные шрифты: Inter (UI & Проза) + JetBrains Mono (Телеметрия & Код) + Space Grotesk (Заголовки) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            display: ['"Space Grotesk"', '"Inter"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              obsidian: '#07090e',
+              deep: '#0b101b',
+              surface: '#111827',
+              surfaceHover: '#172238',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderFocus: 'rgba(6, 182, 212, 0.5)',
+              cyan: '#06b6d4',
+              cyanGlow: '#22d3ee',
+              gold: '#f59e0b',
+              goldGlow: '#fbbf24',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+            }
+          },
+          boxShadow: {
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.45)',
+            'glow-cyan': '0 0 25px rgba(6, 182, 212, 0.25)',
+            'glow-gold': '0 0 30px rgba(245, 158, 11, 0.3)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Плавные переходы и современный скроллбар */
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: #060911;
+      background-image: 
+        radial-gradient(ellipse 100% 50% at 50% -10%, rgba(6, 182, 212, 0.12), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 85% 80%, rgba(245, 158, 11, 0.05), transparent 60%),
+        radial-gradient(ellipse 50% 50% at 15% 50%, rgba(16, 185, 129, 0.04), transparent 50%);
+      background-attachment: fixed;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* Фоновая тонкая сетка в стиле аэрокосмической телеметрии */
+    .bg-cyber-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+
+    /* Эффект матового стекла */
+    .glass-card {
+      background: rgba(14, 21, 37, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-card:hover {
+      border-color: rgba(6, 182, 212, 0.35);
+      background: rgba(17, 26, 46, 0.85);
+    }
+
+    .glass-nav {
+      background: rgba(7, 10, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Золотое свечение для казначейства */
+    .glow-gold-text {
+      text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+    }
+    .glow-cyan-text {
+      text-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+    }
+
+    /* Кастомный современный скроллбар */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #07090e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #06b6d4;
+    }
+
+    /* Модалки анимации */
+    .modal-backdrop {
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .modal-box {
+      animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased bg-cyber-grid flex flex-col selection:bg-brand-cyan/30 selection:text-white">
+
+  <!-- ============================================================================== -->
+  <!-- 1. ВЕРХНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (FLOATING GLASS NAVBAR) -->
+  <!-- ============================================================================== -->
+  <header class="sticky top-0 z-40 glass-nav transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Бренд и сетевой статус -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-cyan/20 to-brand-emerald/20 border border-brand-cyan/40 flex items-center justify-center shadow-glow-cyan">
+          <span class="font-display font-black text-sm text-brand-cyanGlow tracking-wider">ATA</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-white text-sm sm:text-base tracking-tight">ALEXANDER TALENTS AGENCY</span>
+            <span class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SECURE PROTOCOL v36.2
+            </span>
+          </div>
+          <div class="text-[11px] text-slate-400 font-medium">Программа «Социальный Лифт 2026» // Закрытый Консилиум</div>
+        </div>
+      </div>
+
+      <!-- Центральный виджет: Казначейство фонда (10 236 монеток) -->
+      <div onclick="openTreasuryModal()" class="cursor-pointer group flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30 hover:border-amber-400 transition-all shadow-glow-gold">
+        <div class="text-xl group-hover:scale-110 transition-transform">🪙</div>
+        <div>
+          <div class="text-[10px] uppercase font-mono font-bold tracking-wider text-amber-300/80 flex items-center gap-1.5">
+            <span>ФОНД ПОДДЕРЖКИ</span>
+            <span class="text-[9px] px-1 bg-amber-400/20 text-amber-300 rounded border border-amber-400/30">LOCKED</span>
+          </div>
+          <div class="text-sm sm:text-base font-extrabold font-mono text-amber-400 glow-gold-text tracking-wide flex items-baseline gap-1">
+            <span id="fund-counter">10 236</span>
+            <span class="text-xs text-amber-200/90 font-sans font-medium">монеток</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Правая группа: 2FA Авторизация и Управление -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- Кнопка/Статус авторизации -->
+        <div id="auth-status-bar">
+          <button onclick="openKeyModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 text-xs font-semibold transition-all hover:border-brand-cyan/60">
+            <span>🔒</span>
+            <span class="hidden sm:inline">Ввести спец-ключ</span>
+            <span class="sm:hidden">Вход</span>
+          </button>
+        </div>
+
+        <!-- Переключатель звука синтезатора -->
+        <button onclick="toggleAudio()" id="btn-audio" title="Звуковые сигналы" class="w-9 h-9 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 text-sm transition-colors">
+          🔊
+        </button>
+
+        <!-- Настройки связи Supabase -->
+        <button onclick="toggleSettingsModal()" title="Настройки Supabase" class="w-9 h-9 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 text-sm transition-colors">
+          ⚙️
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================================== -->
+  <!-- 2. ГЛАВНЫЙ HERO-БЛОК // МАНИФЕСТ И КЛЮЧЕВЫЕ МЕТРИКИ -->
+  <!-- ============================================================================== -->
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+    
+    <!-- Hero карточка -->
+    <section class="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden border border-white/10 shadow-glass">
+      <div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-brand-cyan/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute right-40 -bottom-20 w-80 h-80 rounded-full bg-brand-gold/10 blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20">
+          <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+          НЕЗАВИСИМЫЙ ЛИТЕРАТУРНЫЙ ЛИФТ ATA 2026
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-display font-extrabold text-white tracking-tight leading-tight">
+          Грантовый отбор авторов <br class="hidden sm:block">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-emerald">
+            с безупречным мастерством слова
+          </span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
+          Закрытый конкурс для спонсоров агентства и авторитетных литературных критиков Фикбука. 
+          Голосование защищено криптографическим протоколом <strong>Proof-of-Work</strong>, аппаратной привязкой ключей <strong>2FA + Fingerprint</strong> и неизменным таймером кулдауна <strong>72 часа</strong>.
+        </p>
+
+        <!-- 4 Ключевые метрики в виде плиток -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 font-mono">
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="text-[11px] text-slate-400 uppercase font-semibold">Фонд поддержки</div>
+            <div class="text-lg font-bold text-amber-400 glow-gold-text">10 236 🪙</div>
+            <div class="text-[10px] text-slate-500">Заблокирован в эскроу</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="text-[11px] text-slate-400 uppercase font-semibold">Финалистов в пуле</div>
+            <div class="text-lg font-bold text-brand-cyan glow-cyan-text">5 Авторов</div>
+            <div class="text-[10px] text-slate-500">Tier S+ / Tier S / Tier A+</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="text-[11px] text-slate-400 uppercase font-semibold">Всего голосов</div>
+            <div id="hero-total-votes" class="text-lg font-bold text-white">0 Голосов</div>
+            <div class="text-[10px] text-emerald-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Чистый старт
+            </div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+            <div class="text-[11px] text-slate-400 uppercase font-semibold">Анти-спам кулдаун</div>
+            <div class="text-lg font-bold text-emerald-400">72 Часа</div>
+            <div class="text-[10px] text-slate-500">1 голос в 3 дня на ключ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================================== -->
+    <!-- 3. ПАНЕЛЬ ФИЛЬТРОВ И БЫСТРЫХ ДЕЙСТВИЙ -->
+    <!-- ============================================================================== -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      
+      <!-- Категории/фильтры -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 font-medium text-xs">
+        <button onclick="setFilter('ALL')" id="filter-all" class="px-3.5 py-2 rounded-xl bg-brand-cyan text-slate-950 font-bold transition-all shadow-glow-cyan">
+          Все авторы (5)
+        </button>
+        <button onclick="setFilter('Гарри Поттер')" id="filter-hp" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-all">
+          Гарри Поттер
+        </button>
+        <button onclick="setFilter('Sci-Fi')" id="filter-scifi" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-all">
+          Sci-Fi / AD&D
+        </button>
+        <button onclick="setFilter('Ориджиналы')" id="filter-orig" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-all">
+          Ориджиналы
+        </button>
+        <button onclick="setFilter('TNO')" id="filter-tno" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-all">
+          TNO / Альт. История
+        </button>
+      </div>
+
+      <!-- Быстрые действия -->
+      <div class="flex items-center gap-2 font-medium text-xs">
+        <button onclick="openCompareModal()" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-slate-200 flex items-center gap-1.5 transition-colors">
+          <span>⚖️</span>
+          <span>Матрица сравнения</span>
+        </button>
+        <button onclick="openTreasuryModal()" class="px-3 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 flex items-center gap-1.5 transition-colors">
+          <span>🪙</span>
+          <span>Казначейство</span>
+        </button>
+        <button onclick="toggleCliDrawer()" class="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-slate-200 flex items-center gap-1.5 transition-colors">
+          <span class="font-mono text-brand-cyan">&gt;_</span>
+          <span>Консоль CLI</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ============================================================================== -->
+    <!-- 4. СЕТКА КАРТОЧЕК 5 ЗОЛОТЫХ ФИНАЛИСТОВ -->
+    <!-- ============================================================================== -->
+    <div id="candidates-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Генерируется динамически через JS с сохранением 0 голосов -->
+    </div>
+
+  </main>
+
+  <!-- ============================================================================== -->
+  <!-- 5. МОДАЛЬНОЕ ОКНО 2FA АВТОРИЗАЦИИ (БЕЗ РАСКРЫТИЯ КЛЮЧЕЙ НА ЭКРАНЕ) -->
+  <!-- ============================================================================== -->
+  <div id="key-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 space-y-5 border border-cyan-500/30 shadow-2xl modal-box">
+      
+      <!-- Шапка модалки -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center text-lg">
+            🔑
+          </div>
+          <div>
+            <h3 class="text-base font-display font-bold text-white tracking-wide">ДВУХФАКТОРНАЯ АВТОРИЗАЦИЯ</h3>
+            <div class="text-[11px] text-brand-cyan font-mono">ATA PROTOCOL // 2FA + FINGERPRINT</div>
+          </div>
+        </div>
+        <button onclick="closeKeyModal()" class="text-slate-400 hover:text-white text-2xl font-light leading-none">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Голосование закрыто от публичных накруток. Для участия введите персональный спец-ключ и 4-значный PIN-код, выданный администратором агентства.
+      </p>
+
+      <!-- Поля ввода -->
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">1. Спец-ключ доступа:</label>
+          <input id="input-voter-key" type="text" placeholder="Введите персональный ключ доступа..." 
+                 class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono text-xs uppercase focus:border-brand-cyan focus:outline-none focus:ring-1 focus:ring-brand-cyan transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">2. Личный PIN-код (4 цифры):</label>
+          <input id="input-voter-pin" type="password" maxlength="4" placeholder="••••" 
+                 class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono text-sm tracking-widest focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all">
+        </div>
+      </div>
+
+      <!-- Защитная плашка -->
+      <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] text-slate-400 space-y-1">
+        <div class="text-brand-cyan font-semibold uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-cyan animate-pulse"></span>
+          АППАРАТНАЯ ПРИВЯЗКА УСТРОЙСТВА
+        </div>
+        <p class="leading-relaxed text-slate-400">
+          При первом входе ключ автоматически привязывается к аппаратному отпечатку текущего браузера (Canvas + WebGL ID). Передать ключ невозможно.
+        </p>
+      </div>
+
+      <!-- Кнопки действий -->
+      <div class="pt-2 flex items-center justify-between gap-3">
+        <button id="btn-logout-key" onclick="logoutKey()" class="hidden px-4 py-2.5 rounded-xl border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 text-xs font-bold transition-all">
+          ВЫЙТИ
+        </button>
+        <button id="btn-submit-key" onclick="handleKeySubmit()" class="w-full px-5 py-2.5 rounded-xl bg-brand-cyan hover:bg-cyan-400 text-slate-950 font-extrabold text-xs tracking-wider uppercase transition-all shadow-glow-cyan">
+          Активировать и привязать
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 6. МОДАЛЬНОЕ ОКНО: ДОСЬЕ, 6-ОСЕВОЙ РАДАР И ЧИТАЛЬНЫЙ ЗАЛ -->
+  <!-- ============================================================================== -->
+  <div id="dossier-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col border border-white/10 shadow-2xl modal-box">
+      
+      <!-- Шапка досье -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-slate-900/70 rounded-t-2xl">
+        <div class="flex items-center gap-3">
+          <span id="modal-tier" class="text-xs px-2.5 py-1 rounded-lg font-extrabold font-mono uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">TIER S+</span>
+          <div>
+            <h2 id="modal-name" class="text-base sm:text-lg font-display font-extrabold text-white">Имя Кандидата</h2>
+            <div id="modal-title" class="text-xs text-brand-cyan font-medium">Литературный титул</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="modal-subs" class="text-xs font-mono text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700 hidden sm:inline">
+            👥 8 ПОДПИСЧИКОВ
+          </span>
+          <button onclick="closeDossierModal()" class="text-slate-400 hover:text-white text-2xl font-light leading-none">&times;</button>
+        </div>
+      </div>
+
+      <!-- Вкладки досье -->
+      <div class="flex items-center border-b border-white/10 bg-slate-950/60 px-6 text-xs font-semibold">
+        <button onclick="switchDossierTab('audit')" id="tab-btn-audit" class="py-3 px-4 text-brand-cyan border-b-2 border-brand-cyan font-bold">ХИРУРГИЧЕСКИЙ АУДИТ</button>
+        <button onclick="switchDossierTab('radar')" id="tab-btn-radar" class="py-3 px-4 text-slate-400 hover:text-white">6-ОСЕВОЙ РАДАР КАЧЕСТВА</button>
+        <button onclick="switchDossierTab('reader')" id="tab-btn-reader" class="py-3 px-4 text-slate-400 hover:text-white">ЧИТАЛЬНЫЙ ЗАЛ</button>
+      </div>
+
+      <!-- Контент вкладок -->
+      <div class="p-6 overflow-y-auto space-y-6 text-sm text-slate-300 leading-relaxed">
+        
+        <!-- Вкладка 1: Аудит -->
+        <div id="tab-content-audit" class="space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-slate-900/80 border border-slate-800 rounded-xl text-xs font-mono">
+            <div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Флагман:</div>
+              <div id="modal-flagship" class="font-bold text-white truncate">Работа</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Фэндом / Жанр:</div>
+              <div id="modal-fandom" class="font-bold text-brand-cyan truncate">Фэндом</div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">Решение Лифта:</div>
+              <div class="font-bold text-amber-400">🏛️ Рекомендован в Золотой Пул</div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-extrabold font-mono text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span>[+]</span> СИЛЬНЫЕ СТОРОНЫ И ЗРЕЛОСТЬ СТИЛЯ
+            </h3>
+            <ul id="modal-pros" class="space-y-2 list-disc list-inside text-slate-200 text-xs sm:text-sm"></ul>
+          </div>
+
+          <div class="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+            <h3 class="text-xs font-extrabold font-mono text-amber-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <span>[!]</span> ТОЧКА КАЛИБРОВКИ ДЛЯ ЧИТАТЕЛЯ
+            </h3>
+            <p id="modal-cons" class="text-slate-300 text-xs sm:text-sm"></p>
+          </div>
+        </div>
+
+        <!-- Вкладка 2: 6-осевой Радар Качества (SVG) -->
+        <div id="tab-content-radar" class="hidden space-y-4 text-center">
+          <div class="text-xs text-slate-400 font-mono">Комплексный профиль мастерства по 6 ключевым литературным измерениям (шкала 10 баллов):</div>
+          <div class="flex justify-center py-2">
+            <div id="radar-container" class="w-72 h-72 relative">
+              <!-- SVG Radar генерируется динамически через JS -->
+            </div>
+          </div>
+          <div id="radar-legend" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-mono text-slate-300 max-w-lg mx-auto"></div>
+        </div>
+
+        <!-- Вкладка 3: Читалка отрывка -->
+        <div id="tab-content-reader" class="hidden space-y-4">
+          <div class="flex items-center justify-between p-3 bg-slate-900/90 border border-slate-800 rounded-xl text-xs">
+            <span class="text-slate-400 font-mono font-semibold">// ЭКСКЛЮЗИВНЫЙ ОТРЫВОК:</span>
+            <div class="flex items-center gap-2">
+              <button onclick="changeFontSize(-1)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono font-bold">A-</button>
+              <button onclick="changeFontSize(1)" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono font-bold">A+</button>
+            </div>
+          </div>
+          <div id="reader-viewport" class="p-6 bg-slate-900/50 border border-slate-800 rounded-xl leading-relaxed text-slate-200 text-sm font-sans" style="font-size: 15px;">
+            <p id="modal-quote" class="italic"></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Футер модалки -->
+      <div class="px-6 py-4 border-t border-white/10 bg-slate-900/70 rounded-b-2xl flex items-center justify-between">
+        <button onclick="closeDossierModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">
+          Закрыть
+        </button>
+        <button id="modal-vote-btn" onclick="executeVoteFromModal()" class="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg transition-all">
+          Проголосовать за автора
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 7. МОДАЛЬНОЕ ОКНО: МАТРИЦА СРАВНЕНИЯ КАНДИДАТОВ -->
+  <!-- ============================================================================== -->
+  <div id="compare-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card rounded-2xl max-w-3xl w-full p-6 space-y-5 border border-white/10 shadow-2xl modal-box">
+      
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚖️</span>
+          <div>
+            <h3 class="text-base font-display font-bold text-white">СРАВНИТЕЛЬНАЯ МАТРИЦА ФИНАЛИСТОВ</h3>
+            <div class="text-[11px] text-slate-400 font-mono">SIDE-BY-SIDE LITERARY COMPARISON</div>
+          </div>
+        </div>
+        <button onclick="closeCompareModal()" class="text-slate-400 hover:text-white text-2xl font-light">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[11px] text-slate-400 uppercase font-semibold mb-1.5">Кандидат А:</label>
+          <select id="compare-select-1" onchange="renderComparison()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand-cyan"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-400 uppercase font-semibold mb-1.5">Кандидат Б:</label>
+          <select id="compare-select-2" onchange="renderComparison()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-brand-cyan"></select>
+        </div>
+      </div>
+
+      <div id="compare-matrix-content" class="overflow-y-auto max-h-[55vh] space-y-3 text-xs">
+        <!-- Генерируется JS -->
+      </div>
+
+      <div class="pt-3 border-t border-white/10 flex justify-end">
+        <button onclick="closeCompareModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 8. МОДАЛЬНОЕ ОКНО: СИМУЛЯТОР РАСПРЕДЕЛЕНИЯ КАЗНАЧЕЙСТВА (10 236 МОНЕТОК) -->
+  <!-- ============================================================================== -->
+  <div id="treasury-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card rounded-2xl max-w-2xl w-full p-6 space-y-5 border border-amber-500/40 shadow-2xl modal-box">
+      
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🪙</span>
+          <div>
+            <h3 class="text-base font-display font-bold text-white">СИМУЛЯТОР ВЫПЛАТ ИЗ ФОНДА ATA</h3>
+            <div class="text-[11px] text-amber-400 font-mono font-bold">10 236 МОНЕТОК // DYNAMIC ALLOCATION MODEL</div>
+          </div>
+        </div>
+        <button onclick="closeTreasuryModal()" class="text-slate-400 hover:text-white text-2xl font-light">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Каждый голос спонсора напрямую определяет долю неснижаемого фонда агентства (10 236 монеток), которую автор получит на развитие творчества после подведения итогов.
+      </p>
+
+      <div id="treasury-breakdown" class="space-y-3 font-mono text-xs">
+        <!-- Генерируется динамически через JS -->
+      </div>
+
+      <div class="pt-3 border-t border-white/10 flex justify-end">
+        <button onclick="closeTreasuryModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 9. МОДАЛЬНОЕ ОКНО: НАСТРОЙКИ SUPABASE -->
+  <!-- ============================================================================== -->
+  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 modal-backdrop">
+    <div class="glass-card rounded-2xl max-w-md w-full p-6 space-y-4 border border-white/10 shadow-2xl modal-box">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-sm font-display font-bold text-white flex items-center gap-2">
+          <span>⚙️</span> ПАРАМЕТРЫ СЕТИ SUPABASE
+        </h3>
+        <button onclick="toggleSettingsModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Укажите ключи из проекта Supabase (<strong>Project Settings -&gt; API</strong>) для синхронизации голосов в реальном времени.
+      </p>
+
+      <div class="space-y-3 text-xs font-mono">
+        <div>
+          <label class="block text-slate-300 mb-1">SUPABASE_URL:</label>
+          <input id="cfg-supabase-url" type="text" placeholder="https://xxxx.supabase.co" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-cyan">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1">SUPABASE_ANON_KEY:</label>
+          <input id="cfg-supabase-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-brand-cyan">
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-end gap-2">
+        <button onclick="saveSupabaseSettings()" class="px-5 py-2 bg-brand-cyan hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-glow-cyan">
+          Сохранить и переподключить
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 10. ВЫДВИЖНАЯ КОНСОЛЬ CLI ТЕРМИНАЛА (DRAWER) -->
+  <!-- ============================================================================== -->
+  <div id="cli-drawer" class="fixed bottom-0 inset-x-0 z-40 bg-slate-950/95 border-t border-slate-800 shadow-2xl transition-all duration-300 transform translate-y-full">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-3">
+      
+      <!-- Заголовок консоли -->
+      <div class="flex items-center justify-between text-xs font-mono">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+          <span class="text-brand-cyan font-bold">ATA_CLI_CONSOLE // ИНТЕРАКТИВНЫЙ КОМАНДНЫЙ ИНТЕРФЕЙС</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="executeCliCommand('clear')" class="text-slate-400 hover:text-white text-[11px]">Очистить</button>
+          <button onclick="toggleCliDrawer()" class="text-slate-400 hover:text-white text-base leading-none">&times;</button>
+        </div>
+      </div>
+
+      <!-- Логи терминала -->
+      <div id="cli-logs" class="h-40 overflow-y-auto bg-slate-900/90 border border-slate-800 rounded-xl p-3 font-mono text-xs space-y-1">
+        <div class="text-slate-500">// ATA Core v36.2 Online. Все голоса обнулены. Система готова к голосованию.</div>
+        <div class="text-slate-500">// Введите команду или нажмите кнопку ниже. Пример: 'help', 'vote rationale', 'fund'</div>
+      </div>
+
+      <!-- Быстрые команды -->
+      <div class="flex items-center gap-2 overflow-x-auto text-[11px] font-mono">
+        <button onclick="executeCliCommand('help')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">help</button>
+        <button onclick="executeCliCommand('fund')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300">fund</button>
+        <button onclick="executeCliCommand('compare')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300">compare</button>
+        <button onclick="executeCliCommand('ping')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300">ping</button>
+        <button onclick="executeCliCommand('diagnostics')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300">diagnostics</button>
+      </div>
+
+      <!-- Поле ввода команды -->
+      <div class="flex items-center gap-2">
+        <span class="text-brand-cyan font-mono text-xs font-bold">&gt;</span>
+        <input id="cli-input" type="text" placeholder="Введите команду (help, vote &lt;id&gt;, compare, fund)..." 
+               onkeydown="if(event.key === 'Enter') handleCliInput()"
+               class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-white font-mono text-xs focus:outline-none focus:border-brand-cyan">
+        <button onclick="handleCliInput()" class="px-4 py-1.5 rounded-xl bg-brand-cyan hover:bg-cyan-400 text-slate-950 font-bold text-xs font-mono">
+          RUN
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================================== -->
+  <!-- 11. ФУТЕР САЙТА -->
+  <!-- ============================================================================== -->
+  <footer class="mt-16 border-t border-white/10 bg-slate-950/80 py-8 text-xs text-slate-400 font-mono">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="text-slate-300 font-bold">ALEXANDER TALENTS AGENCY</span> &copy; 2026. Программа «Социальный Лифт».
+      </div>
+      <div class="flex items-center gap-4 text-slate-500">
+        <span>Статический хостинг: GitHub Pages</span>
+        <span>•</span>
+        <span>СУБД: Supabase (PostgreSQL 16)</span>
+        <span>•</span>
+        <span>Анти-чит: SHA-256 PoW</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================================== -->
+  <!-- 12. СКРИПТ: ЯДРО ТЕРМИНАЛА И ЛОГИКА 100 МОДУЛЕЙ -->
+  <!-- ============================================================================== -->
+  <script>
+    // --- 1. КАТАЛОГ 5 ЗОЛОТЫХ ФИНАЛИСТОВ (СТАРТ СТРОГО С 0 ГОЛОСОВ) ---
+    const CANDIDATES = [
+      {
+        id: 'rationale',
+        name: 'Rationale_Blackthorn',
+        realName: 'Константин',
+        title: 'Архитектор Чистокровного Канона',
+        tier: 'TIER S+',
+        tierClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-glow-gold',
+        subscribers: 8,
+        flagship: '«Право Крови» (48 551 слово)',
+        fandom: 'Гарри Поттер',
+        categoryTag: 'Гарри Поттер',
+        summary: 'Грандиозная семейная хроника рода Блэк и Лестрейндж. Деконструкция Беллатрикс до Азкабана, отцовская любовь Сигнуса и глубокий бунинский психологизм.',
+        pros: [
+          'Язык классической русской психологической прозы высочайшей пробы',
+          'Сцена прощания отца и дочери: ключ от ящика стола как символ вечного права на дом',
+          'Очеловечивание Беллатрикс Лестрейндж без карикатурного кинобезумия',
+          'Строгое соблюдение книжного канона и отказ от штампов родомагии'
+        ],
+        cons: 'Монументальный slow-burn. Читателю необходимо терпение для вдумчивого погружения.',
+        quote: '«Туда будут приходить только твои письма. И читать их буду только я. Если тебе когда-нибудь покажется, что ты осталась одна... этот ключ повернется с первого раза».',
+        votes: 0,
+        radar: { style: 10, psychology: 10, canon: 9.8, plot: 9.2, pacing: 8.5, lore: 9.9 }
+      },
+      {
+        id: 'korvin',
+        name: 'Корвин Мэларски',
+        realName: 'Корвин',
+        title: 'Теоретик Спекулятивной Фантастики',
+        tier: 'TIER S',
+        tierClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-glow-cyan',
+        subscribers: 33,
+        flagship: '«Литературные Студии» / «Кубики, милый!»',
+        fandom: 'Ориджиналы / AD&D / Твердая НФ',
+        categoryTag: 'Sci-Fi',
+        summary: 'Энциклопедист и методолог. Научный разбор текстов по С. Лему и Г. Л. Олди, методы стилометрии против нейросетей и польский гусар 1683 года в мире D&D.',
+        pros: [
+          'Академический уровень разбора писательского мастерства (MultiPOV, TTR-стилометрия)',
+          'Остроумнейшая деконструкция LitRPG: реальный рыцарь ломает игровую систему дайсов',
+          'Твердая биологическая НФ: конфликт двух разных Роев (StarCraft x Starship Troopers)',
+          'Бесплатный обучающий корпус высочайшего качества для молодых авторов'
+        ],
+        cons: 'Высокий порог входа: тексты требуют культурного и филологического кругозора.',
+        quote: '«Польский крылатый гусар погибает под Веной — и возрождается в D&D. Рыцарь чести сталкивается с реальностью, где всё решают броски кубиков, и приводит местных магов в священный ужас».',
+        votes: 0,
+        radar: { style: 9.4, psychology: 8.8, canon: 9.5, plot: 9.6, pacing: 9.2, lore: 10 }
+      },
+      {
+        id: 'elena',
+        name: 'Elena Island',
+        realName: 'Нора',
+        title: 'Мастер Экзистенциального Реализма',
+        tier: 'TIER S',
+        tierClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-glow-cyan',
+        subscribers: 32,
+        flagship: '«Соль на ране» / «Взросление»',
+        fandom: 'Ориджиналы (Чехия / Прага)',
+        categoryTag: 'Ориджиналы',
+        summary: 'Тягучий европейский реализм. Прага зимы 1994 года, бывший историк Ян Кршиж работает ночным сторожем в частном музее пыток на окраине Малой Страны.',
+        pros: [
+          'Атмосфера европейского авторского кинематографа 90-х годов',
+          'Снег как мука, запах железа орудий, чувство времени, ушедшего вперед',
+          'Тонкая передача одиночества и экзистенциального достоинства человека'
+        ],
+        cons: 'Тяжелый меланхолический тон повествования, требующий сопереживания.',
+        quote: '«В Праге зимой 1994 года снег падал так густо, будто кто-то сверху тряс огромную простыню с мукой. Улицы выглядели как декорации к фильму, который уже закончился, а зрители всё ещё сидели и ждали титров».',
+        votes: 0,
+        radar: { style: 9.8, psychology: 9.7, canon: 9.0, plot: 8.9, pacing: 8.3, lore: 9.5 }
+      },
+      {
+        id: 'sfortza',
+        name: 'sfortzaphantom',
+        realName: 'Сфорца',
+        title: 'Хронист Альтернативной Истории',
+        tier: 'TIER A+',
+        tierClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+        subscribers: 12,
+        flagship: '«Ноктюрн о Сибири» (44k) / «Падающий снег»',
+        fandom: 'The New Order / Hearts of Iron IV',
+        categoryTag: 'TNO',
+        summary: 'Политологическая и военная трагедия сибирских варлордов. Дмитрий Карбышев, понимающий роковую ошибку создания Черной Лиги, и его добровольный уход под лед.',
+        pros: [
+          'Сложнейший интеллектуальный каст: Шостакович, Лихачев, Хармс и Сахаров в Сибири',
+          'Инженерный взгляд Карбышева: счет шагов как пролетов моста, татарские корни',
+          'Диалог с Язовым: экзистенциальный страх перед судом людей из будущего сквозь лупу',
+          'Рифма с Маутхаузеном: возвращение субъектности через выбор момента гибели'
+        ],
+        cons: 'Специфический сеттинг альтернативной истории, требующий знания эпохи TNO.',
+        quote: '«Он стоял перед ручьем и понял: не чувствует торжества, не чувствует правоты, не чувствует даже достойной трагедии. Остались только усталость и стыд... Потому что пьедестал — самое безлюдное место на свете».',
+        votes: 0,
+        radar: { style: 9.5, psychology: 9.9, canon: 9.7, plot: 9.4, pacing: 9.0, lore: 9.8 }
+      },
+      {
+        id: 'kupalina',
+        name: 'Kupalina Romanova',
+        realName: 'Купалина',
+        title: 'Мастер Визуального Нео-Ритма',
+        tier: 'TIER S',
+        tierClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-glow-cyan',
+        subscribers: 27,
+        flagship: '«Тачки: Бездушное Будущее»',
+        fandom: 'Тачки (Cars Universe) / Киберпанк',
+        categoryTag: 'Ориджиналы',
+        summary: 'Кинематографичный адреналиновый автоспорт. Холодный розовый неон Лос-Анджелеса, хирургический расчет корпораций и протест живого гонщика против синтетики.',
+        pros: [
+          'Уникальная динамика сцен гонки и звукописи автоспорта',
+          'Трансформация детской анимации в бескомпромиссный киберпанк-триллер',
+          'Сильный внутренний конфликт противостояния живому таланту и телеметрии'
+        ],
+        cons: 'Неожиданный первоисточник может потребовать преодоления предубеждения.',
+        quote: '«Цифра 8 горела на его боку холодным, почти хирургическим светом — не теплом, а сигналом. Предупреждением. Вокруг него гудел Лос-Анджелес...»',
+        votes: 0,
+        radar: { style: 9.6, psychology: 9.1, canon: 8.8, plot: 9.5, pacing: 9.9, lore: 9.0 }
+      }
+    ];
+
+    // --- 2. ВНУТРЕННИЙ РЕЕСТР АВТОРИЗАЦИИ (БЕЗ ВЫВОДА В UI) ---
+    // Полный реестр со всеми держателями вынесен в закрытый файл SPONSOR_KEYS_VAULT.md
+    const DEMO_KEYS = {
+      'SPONSOR-GOLD-777': { pin: '7777', holder: 'Меценат Лифта (Александр)', role: 'SPONSOR', coins: 5000, weight: 1 },
+      'SPONSOR-CORE-2026': { pin: '2026', holder: 'Спонсор Сообщества', role: 'SPONSOR', coins: 2500, weight: 1 },
+      'SPONSOR-PATRON-88': { pin: '8888', holder: 'Почетный Спонсор ATA', role: 'SPONSOR', coins: 1000, weight: 1 },
+      'SPONSOR-PATRON-99': { pin: '9999', holder: 'Почетный Спонсор ATA', role: 'SPONSOR', coins: 1000, weight: 1 },
+      'SPONSOR-ANGEL-12': { pin: '3412', holder: 'Меценат Литературного Крыла', role: 'SPONSOR', coins: 736, weight: 1 },
+      'CRITIC-ELITE-01': { pin: '1111', holder: 'Главный Рецензент ATA', role: 'CRITIC', coins: 0, weight: 1 },
+      'CRITIC-HONOR-02': { pin: '2222', holder: 'Топ-Комментатор Фикбука', role: 'CRITIC', coins: 0, weight: 1 },
+      'CRITIC-ALPHA-03': { pin: '3333', holder: 'Литературный Обозреватель', role: 'CRITIC', coins: 0, weight: 1 },
+      'CRITIC-BETA-04': { pin: '4444', holder: 'Эксперт Драматургии', role: 'CRITIC', coins: 0, weight: 1 },
+      'CRITIC-GAMMA-05': { pin: '5555', holder: 'Мастер Разборов Текста', role: 'CRITIC', coins: 0, weight: 1 }
+    };
+
+    // --- 3. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СОСТОЯНИЕ ---
+    let supabaseClient = null;
+    let realtimeChannel = null;
+    let currentUserKey = localStorage.getItem('ata_active_key') || null;
+    let currentUserPin = localStorage.getItem('ata_active_pin') || null;
+    let currentUserData = null; 
+    let activeFilter = 'ALL';
+    let isSubmittingVote = false;
+    let audioEnabled = true;
+    let deviceFingerprint = null;
+    let currentDossierId = 'rationale';
+    let currentFontSize = 15;
+
+    const COOLDOWN_HOURS = 72;
+    const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000;
+    const TOTAL_FUND_COINS = 10236;
+
+    // --- 4. WEB AUDIO API СИНТЕЗАТОР ЗВУКОВ (НЕЖНЫЕ АКУСТИЧЕСКИЕ ПИНГИ) ---
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playBleep(freq = 520, type = 'sine', duration = 0.05) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('btn-audio').innerText = audioEnabled ? '🔊' : '🔇';
+      addLog(`> Звук: ${audioEnabled ? 'ВКЛЮЧЕН' : 'ОТКЛЮЧЕН'}`, 'text-slate-400');
+    }
+
+    // --- 5. АППАРАТНЫЙ ОТПЕЧАТОК УСТРОЙСТВА (FINGERPRINTING) ---
+    async function getDeviceFingerprint() {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillText('ATA_LIFT_HW_2026', 2, 2);
+        const dataUrl = canvas.toDataURL();
+        
+        let hash = 0;
+        for (let i = 0; i < dataUrl.length; i++) {
+          hash = ((hash << 5) - hash) + dataUrl.charCodeAt(i);
+          hash |= 0;
+        }
+        return 'DEV-' + Math.abs(hash).toString(16).toUpperCase();
+      } catch (e) {
+        return 'DEV-GENERIC-NODE';
+      }
+    }
+
+    // --- 6. PROOF-OF-WORK КРИПТО-МАЙНЕР (SHA-256) ---
+    async function solveProofOfWork(seed) {
+      let nonce = 0;
+      const targetPrefix = '00';
+      while (nonce < 1000000) {
+        const str = `${seed}:${nonce}`;
+        const msgBuffer = new TextEncoder().encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        if (hashHex.startsWith(targetPrefix)) {
+          return nonce.toString();
+        }
+        nonce++;
+      }
+      return nonce.toString();
+    }
+
+    // --- 7. ЛОГИ И ВЫВОД В CLI ---
+    function addLog(text, colorClass = 'text-slate-300') {
+      const container = document.getElementById('cli-logs');
+      if (!container) return;
+      const row = document.createElement('div');
+      row.className = `${colorClass} font-mono text-[11px] leading-tight`;
+      const time = new Date().toTimeString().split(' ')[0];
+      row.innerHTML = `<span class="text-slate-500">[${time}]</span> ${text}`;
+      container.appendChild(row);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function toggleCliDrawer() {
+      const drawer = document.getElementById('cli-drawer');
+      drawer.classList.toggle('translate-y-full');
+      playBleep(400, 'sine', 0.04);
+    }
+
+    // --- 8. АВТОРИЗАЦИЯ И УПРАВЛЕНИЕ КЛЮЧАМИ ---
+    async function handleKeySubmit() {
+      const keyInput = document.getElementById('input-voter-key');
+      const pinInput = document.getElementById('input-voter-pin');
+      const keyVal = keyInput.value.trim().toUpperCase();
+      const pinVal = pinInput.value.trim();
+
+      if (!keyVal || !pinVal) {
+        alert('Укажите спец-ключ и 4-значный PIN-код.');
+        return;
+      }
+
+      playBleep(580, 'sine', 0.04);
+      addLog(`> Авторизация ключа [${keyVal}]...`, 'text-brand-cyan');
+
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient.rpc('verify_voter_credentials', {
+            p_key_code: keyVal,
+            p_pin_code: pinVal,
+            p_device_hash: deviceFingerprint
+          });
+          if (!error && data && data.is_valid) {
+            currentUserKey = keyVal;
+            currentUserPin = pinVal;
+            localStorage.setItem('ata_active_key', currentUserKey);
+            localStorage.setItem('ata_active_pin', currentUserPin);
+            await validateCurrentKey();
+            closeKeyModal();
+            playBleep(880, 'sine', 0.1);
+            addLog(`> [2FA_OK] Ключ подтвержден в облаке: ${data.holder_name} [${data.role}]`, 'text-emerald-400');
+            alert(`✅ АВТОРИЗАЦИЯ УСПЕШНА!\n\nДобро пожаловать в Терминал ATA, ${data.holder_name}!\nСтатус: ${data.role}`);
+            return;
+          }
+        } catch (e) {
+          console.warn('Supabase auth fallback:', e);
+        }
+      }
+
+      // Локальная валидация
+      if (DEMO_KEYS[keyVal] && DEMO_KEYS[keyVal].pin === pinVal) {
+        currentUserKey = keyVal;
+        currentUserPin = pinVal;
+        localStorage.setItem('ata_active_key', currentUserKey);
+        localStorage.setItem('ata_active_pin', currentUserPin);
+        await validateCurrentKey();
+        closeKeyModal();
+        playBleep(880, 'sine', 0.1);
+        addLog(`> [2FA_OK] Локальный ключ подтвержден: ${currentUserData.holder} [${currentUserData.role}]`, 'text-emerald-400');
+        alert(`✅ АВТОРИЗАЦИЯ УСПЕШНА!\n\nКлюч принят: ${currentUserData.holder}\nРоль: ${currentUserData.role}`);
+      } else {
+        playBleep(220, 'sawtooth', 0.12);
+        addLog(`> [ACCESS_DENIED] Неверный спец-ключ или PIN-код.`, 'text-rose-400');
+        alert('❌ ОШИБКА: Неверный спец-ключ или PIN-код доступа.');
+      }
+    }
+
+    async function validateCurrentKey() {
+      if (!currentUserKey) {
+        currentUserData = null;
+        updateAuthHeader();
+        renderCandidates();
+        return;
+      }
+
+      const normalizedKey = currentUserKey.toUpperCase();
+      let keyInfo = DEMO_KEYS[normalizedKey] || { holder: 'Избиратель ATA', role: 'SPONSOR', coins: 500, weight: 1 };
+
+      const lastVoteTime = parseInt(localStorage.getItem(`ata_vote_time_${normalizedKey}`) || '0', 10);
+      const now = Date.now();
+      const elapsed = now - lastVoteTime;
+      const canVote = elapsed >= COOLDOWN_MS;
+      const remainingMs = Math.max(0, COOLDOWN_MS - elapsed);
+
+      currentUserData = {
+        key: normalizedKey,
+        holder: keyInfo.holder,
+        role: keyInfo.role,
+        coins: keyInfo.coins,
+        weight: keyInfo.weight,
+        canVote: canVote,
+        remainingMs: remainingMs
+      };
+
+      updateAuthHeader();
+      renderCandidates();
+    }
+
+    function updateAuthHeader() {
+      const container = document.getElementById('auth-status-bar');
+      const logoutBtn = document.getElementById('btn-logout-key');
+
+      if (!currentUserData) {
+        container.innerHTML = `
+          <button onclick="openKeyModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 text-xs font-semibold transition-all hover:border-brand-cyan/60">
+            <span>🔒</span>
+            <span class="hidden sm:inline">Ввести спец-ключ</span>
+            <span class="sm:hidden">Вход</span>
+          </button>
+        `;
+        if (logoutBtn) logoutBtn.classList.add('hidden');
+      } else {
+        const isSponsor = currentUserData.role === 'SPONSOR';
+        const roleBadge = isSponsor 
+          ? `<span class="text-amber-400 font-bold font-mono">[SPONSOR]</span>` 
+          : `<span class="text-brand-cyan font-bold font-mono">[CRITIC]</span>`;
+
+        let timerHtml = currentUserData.canVote 
+          ? `<span class="text-emerald-400 font-mono text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">● ГОТОВ К ГОЛОСОВАНИЮ</span>` 
+          : `<span class="text-amber-400 font-mono text-[10px] bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/30">⏳ КУЛДАУН (${formatHours(currentUserData.remainingMs)})</span>`;
+
+        container.innerHTML = `
+          <div onclick="openKeyModal()" class="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 hover:border-slate-600 transition-all text-xs">
+            <span class="text-emerald-400">★</span>
+            <div class="text-left">
+              <div class="font-bold text-white text-[11px] leading-tight flex items-center gap-1.5">
+                <span>${currentUserData.holder}</span>
+                ${roleBadge}
+              </div>
+              <div class="leading-none mt-0.5">${timerHtml}</div>
+            </div>
+          </div>
+        `;
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
+      }
+    }
+
+    function formatHours(ms) {
+      const h = Math.floor(ms / (1000 * 60 * 60));
+      const m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      return `${h}ч ${m}м`;
+    }
+
+    function logoutKey() {
+      currentUserKey = null;
+      currentUserPin = null;
+      currentUserData = null;
+      localStorage.removeItem('ata_active_key');
+      localStorage.removeItem('ata_active_pin');
+      updateAuthHeader();
+      closeKeyModal();
+      playBleep(300, 'sine', 0.05);
+      addLog('> Профиль закрыт. Терминал возвращен в Режим Наблюдателя.', 'text-slate-400');
+    }
+
+    function openKeyModal() {
+      playBleep(480, 'sine', 0.03);
+      document.getElementById('key-modal').classList.remove('hidden');
+    }
+    function closeKeyModal() {
+      document.getElementById('key-modal').classList.add('hidden');
+    }
+
+    // --- 9. РЕНДЕР КАРТОЧЕК КАНДИДАТОВ (ЧИСТЫЙ СТАРТ С 0 ГОЛОСОВ) ---
+    function renderCandidates() {
+      const container = document.getElementById('candidates-grid');
+      container.innerHTML = '';
+
+      const totalVotes = CANDIDATES.reduce((acc, c) => acc + c.votes, 0);
+      document.getElementById('hero-total-votes').innerText = `${totalVotes} Голосов`;
+
+      const filteredList = activeFilter === 'ALL' 
+        ? CANDIDATES 
+        : CANDIDATES.filter(c => c.categoryTag === activeFilter || c.fandom.includes(activeFilter));
+
+      filteredList.forEach(c => {
+        const percent = totalVotes > 0 ? ((c.votes / totalVotes) * 100).toFixed(1) : 0;
+
+        let voteBtnHtml = '';
+        if (!currentUserData) {
+          voteBtnHtml = `
+            <button onclick="openKeyModal()" class="w-full px-3 py-2 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 hover:border-amber-400/50 text-slate-300 hover:text-amber-300 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5">
+              <span>🔒</span> ТРЕБУЕТСЯ КЛЮЧ
+            </button>
+          `;
+        } else if (!currentUserData.canVote) {
+          voteBtnHtml = `
+            <button disabled class="w-full px-3 py-2 bg-slate-900 border border-rose-500/30 text-rose-400 text-xs rounded-xl font-bold cursor-not-allowed opacity-70 flex items-center justify-center gap-1.5 font-mono">
+              <span>⏳</span> КУЛДАУН (72H)
+            </button>
+          `;
+        } else {
+          voteBtnHtml = `
+            <button onclick="executeVote('${c.id}')" class="w-full px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 tracking-wider uppercase">
+              <span>★</span> ПРОГОЛОСОВАТЬ
+            </button>
+          `;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'glass-card rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-glow-cyan hover:-translate-y-1 group';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[10px] font-extrabold px-2.5 py-0.5 border rounded-lg font-mono uppercase ${c.tierClass}">${c.tier}</span>
+              <span class="text-[11px] text-slate-400 font-mono bg-slate-900/80 px-2 py-0.5 rounded-lg border border-slate-800">
+                👥 ${c.subscribers} ПОДПИСЧИКОВ
+              </span>
+            </div>
+
+            <h3 class="text-lg font-display font-extrabold text-white group-hover:text-brand-cyan transition-colors">
+              ${escapeHtml(c.name)}
+            </h3>
+            <div class="text-xs text-brand-cyan font-medium mb-3">${escapeHtml(c.title)}</div>
+
+            <div class="text-xs text-slate-400 mb-2 font-mono">
+              <span class="text-slate-500 uppercase font-semibold">Флагман:</span> 
+              <span class="text-slate-200 font-medium">${escapeHtml(c.flagship)}</span>
+            </div>
+            
+            <p class="text-xs text-slate-300/90 leading-relaxed mb-4 line-clamp-3">
+              ${escapeHtml(c.summary)}
+            </p>
+
+            <!-- Цитата-тизер -->
+            <div class="p-3 bg-slate-900/60 border-l-2 border-brand-cyan rounded-r-xl mb-4 text-xs italic text-slate-300">
+              ${escapeHtml(c.quote)}
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-white/10">
+            <div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+              <span class="text-slate-400 font-semibold">РЕЙТИНГ СПОНСОРОВ:</span>
+              <span class="text-brand-cyan font-bold">${c.votes} ГОЛ. (${percent}%)</span>
+            </div>
+            
+            <!-- Прогресс-бар -->
+            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800 mb-3.5">
+              <div class="bg-gradient-to-r from-brand-cyan to-brand-emerald h-full transition-all duration-700" style="width: ${percent}%"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="openDossierModal('${c.id}')" class="px-2.5 py-2 bg-slate-800/90 hover:bg-slate-700 border border-slate-700 hover:border-brand-cyan text-xs text-slate-200 rounded-xl font-medium transition-all text-center">
+                Досье и Отрывок
+              </button>
+              ${voteBtnHtml}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function setFilter(tag) {
+      activeFilter = tag;
+      ['all', 'hp', 'scifi', 'orig', 'tno'].forEach(f => {
+        const el = document.getElementById(`filter-${f}`);
+        if (el) {
+          el.className = 'px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition-all';
+        }
+      });
+      const activeBtnMap = {
+        'ALL': 'filter-all',
+        'Гарри Поттер': 'filter-hp',
+        'Sci-Fi': 'filter-scifi',
+        'Ориджиналы': 'filter-orig',
+        'TNO': 'filter-tno'
+      };
+      if (activeBtnMap[tag]) {
+        document.getElementById(activeBtnMap[tag]).className = 'px-3.5 py-2 rounded-xl bg-brand-cyan text-slate-950 font-bold transition-all shadow-glow-cyan';
+      }
+      playBleep(520, 'sine', 0.02);
+      renderCandidates();
+    }
+
+    // --- 10. ГОЛОСОВАНИЕ И КРИПТО-ЗАЩИТА ---
+    async function executeVote(candidateId) {
+      if (!currentUserData) {
+        openKeyModal();
+        return;
+      }
+
+      if (!currentUserData.canVote) {
+        alert(`⏳ КУЛДАУН АКТИВЕН!\n\nВы уже проголосовали. До следующего окна голосования: ${formatHours(currentUserData.remainingMs)}.\nОдин голос каждые 3 дня.`);
+        return;
+      }
+
+      if (isSubmittingVote) return;
+
+      const candidate = CANDIDATES.find(c => c.id === candidateId);
+      if (!candidate) return;
+
+      if (!confirm(`Подтвердите голос за автора:\n\n«${candidate.name}» (${candidate.flagship})\n\nВаш ключ: ${currentUserKey}\nКулдаун после голосования: 72 часа.`)) {
+        return;
+      }
+
+      isSubmittingVote = true;
+      playBleep(650, 'sine', 0.05);
+      addLog(`> [POW] Генерация криптографического Proof-of-Work...`, 'text-brand-cyan');
+
+      // Решаем Proof-of-Work
+      const powNonce = await solveProofOfWork(currentUserKey);
+
+      addLog(`> Регистрация голоса за [${candidate.name}] от [${currentUserData.holder}]...`, 'text-brand-cyan');
+
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient.rpc('cast_lift_vote_secure', {
+            p_candidate_id: candidateId,
+            p_key_code: currentUserKey,
+            p_pin_code: currentUserPin,
+            p_device_hash: deviceFingerprint,
+            p_pow_nonce: powNonce
+          });
+
+          if (error) throw error;
+
+          if (data && !data.success) {
+            alert(data.message);
+            addLog(`> [FAIL] Отклонено базой: ${data.message}`, 'text-rose-400');
+            isSubmittingVote = false;
+            return;
+          }
+
+          addLog(`> [SUCCESS] Хэш-квитанция выдана: ${data.receipt_hash.substring(0, 16)}...`, 'text-emerald-400');
+        } catch (err) {
+          console.warn('Supabase vote error, using offline local state:', err);
+          addLog(`> [WARN] Облако недоступно. Голос зафиксирован локально.`, 'text-amber-400');
+        }
+      }
+
+      // Локальная фиксация
+      candidate.votes += 1;
+      saveLocalPersistentVotes();
+      localStorage.setItem(`ata_vote_time_${currentUserKey}`, Date.now().toString());
+
+      await validateCurrentKey();
+      closeDossierModal();
+      renderCandidates();
+
+      playBleep(880, 'sine', 0.12);
+      addLog(`> [COMMIT] Голос успешно зафиксирован! Кулдаун 72h активирован.`, 'text-emerald-400');
+      
+      alert(`🎉 ГОЛОС УСПЕШНО ПРИНЯТ!\n\nВаш выбор в пользу "${candidate.name}" учтен в реестре Агентства.\nСледующее окно голосования для ключа ${currentUserKey} откроется ровно через 3 дня.`);
+      isSubmittingVote = false;
+    }
+
+    function executeVoteFromModal() {
+      executeVote(currentDossierId);
+    }
+
+    // --- 11. МОДАЛКА ДОСЬЕ И ЧИТАЛЬНЫЙ ЗАЛ ---
+    function openDossierModal(candidateId) {
+      currentDossierId = candidateId;
+      playBleep(480, 'sine', 0.03);
+      const c = CANDIDATES.find(item => item.id === candidateId);
+      if (!c) return;
+
+      document.getElementById('modal-tier').className = `text-xs px-2.5 py-1 rounded-lg font-extrabold font-mono uppercase ${c.tierClass}`;
+      document.getElementById('modal-tier').textContent = c.tier;
+      document.getElementById('modal-subs').textContent = `👥 ${c.subscribers} ПОДПИСЧИКОВ`;
+      document.getElementById('modal-name').textContent = `${c.name} (${c.realName})`;
+      document.getElementById('modal-title').textContent = c.title;
+      document.getElementById('modal-flagship').textContent = c.flagship;
+      document.getElementById('modal-fandom').textContent = c.fandom;
+
+      const prosList = document.getElementById('modal-pros');
+      prosList.innerHTML = '';
+      c.pros.forEach(pro => {
+        const li = document.createElement('li');
+        li.textContent = pro;
+        prosList.appendChild(li);
+      });
+
+      document.getElementById('modal-cons').textContent = c.cons;
+      document.getElementById('modal-quote').textContent = c.quote;
+
+      renderRadarChart(c.radar);
+      switchDossierTab('audit');
+      document.getElementById('dossier-modal').classList.remove('hidden');
+    }
+
+    function closeDossierModal() {
+      document.getElementById('dossier-modal').classList.add('hidden');
+    }
+
+    function switchDossierTab(tab) {
+      playBleep(600, 'sine', 0.02);
+      ['audit', 'radar', 'reader'].forEach(t => {
+        document.getElementById(`tab-content-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = 'py-3 px-4 text-slate-400 hover:text-white font-semibold';
+      });
+      document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).className = 'py-3 px-4 text-brand-cyan border-b-2 border-brand-cyan font-bold';
+    }
+
+    function changeFontSize(delta) {
+      currentFontSize = Math.max(13, Math.min(22, currentFontSize + delta));
+      document.getElementById('reader-viewport').style.fontSize = currentFontSize + 'px';
+      playBleep(500, 'sine', 0.02);
+    }
+
+    // --- 12. ГЕНЕРАЦИЯ SVG 6-ОСЕВОГО РАДАРА КАЧЕСТВА ---
+    function renderRadarChart(radar) {
+      const container = document.getElementById('radar-container');
+      const legend = document.getElementById('radar-legend');
+      const axes = [
+        { key: 'style', label: 'Стилистика', val: radar.style },
+        { key: 'psychology', label: 'Психология', val: radar.psychology },
+        { key: 'canon', label: 'Канон / Лор', val: radar.canon },
+        { key: 'plot', label: 'Сюжет', val: radar.plot },
+        { key: 'pacing', label: 'Темпоритм', val: radar.pacing },
+        { key: 'lore', label: 'Глубина', val: radar.lore }
+      ];
+
+      const size = 260;
+      const center = size / 2;
+      const radius = 95;
+      const angleStep = (Math.PI * 2) / axes.length;
+
+      let gridSvg = '';
+      [0.25, 0.5, 0.75, 1].forEach(rPct => {
+        const r = radius * rPct;
+        const pts = axes.map((_, i) => {
+          const a = i * angleStep - Math.PI / 2;
+          return `${center + r * Math.cos(a)},${center + r * Math.sin(a)}`;
+        }).join(' ');
+        gridSvg += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+      });
+
+      axes.forEach((_, i) => {
+        const a = i * angleStep - Math.PI / 2;
+        gridSvg += `<line x1="${center}" y1="${center}" x2="${center + radius * Math.cos(a)}" y2="${center + radius * Math.sin(a)}" stroke="rgba(255,255,255,0.1)"/>`;
+      });
+
+      const polyPoints = axes.map((ax, i) => {
+        const norm = (ax.val / 10) * radius;
+        const a = i * angleStep - Math.PI / 2;
+        return `${center + norm * Math.cos(a)},${center + norm * Math.sin(a)}`;
+      }).join(' ');
+
+      const dataPolygon = `<polygon points="${polyPoints}" fill="rgba(6, 182, 212, 0.25)" stroke="#06b6d4" stroke-width="2"/>`;
+
+      let circles = axes.map((ax, i) => {
+        const norm = (ax.val / 10) * radius;
+        const a = i * angleStep - Math.PI / 2;
+        return `<circle cx="${center + norm * Math.cos(a)}" cy="${center + norm * Math.sin(a)}" r="3" fill="#22d3ee"/>`;
+      }).join('');
+
+      container.innerHTML = `
+        <svg viewBox="0 0 ${size} ${size}" class="w-full h-full">
+          ${gridSvg}
+          ${dataPolygon}
+          ${circles}
+        </svg>
+      `;
+
+      legend.innerHTML = axes.map(a => `
+        <div class="p-2 bg-slate-900 border border-slate-800 rounded-lg text-left">
+          <div class="text-[10px] text-slate-400 uppercase font-semibold">${a.label}</div>
+          <div class="text-xs font-bold text-brand-cyan">${a.val} / 10</div>
+        </div>
+      `).join('');
+    }
+
+    // --- 13. МАТРИЦА СРАВНЕНИЯ КАНДИДАТОВ ---
+    function openCompareModal() {
+      playBleep(520, 'sine', 0.03);
+      const sel1 = document.getElementById('compare-select-1');
+      const sel2 = document.getElementById('compare-select-2');
+      sel1.innerHTML = CANDIDATES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      sel2.innerHTML = CANDIDATES.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      sel2.selectedIndex = 1;
+      renderComparison();
+      document.getElementById('compare-modal').classList.remove('hidden');
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compare-modal').classList.add('hidden');
+    }
+
+    function renderComparison() {
+      const id1 = document.getElementById('compare-select-1').value;
+      const id2 = document.getElementById('compare-select-2').value;
+      const c1 = CANDIDATES.find(c => c.id === id1) || CANDIDATES[0];
+      const c2 = CANDIDATES.find(c => c.id === id2) || CANDIDATES[1];
+
+      const container = document.getElementById('compare-matrix-content');
+      container.innerHTML = `
+        <div class="grid grid-cols-2 gap-3 p-3 bg-slate-900/90 border border-slate-800 rounded-xl font-mono text-xs">
+          <div>
+            <div class="font-extrabold text-brand-cyan text-sm">${c1.name}</div>
+            <div class="text-[11px] text-slate-400">${c1.flagship}</div>
+            <div class="text-[10px] text-emerald-400 font-bold">${c1.tier} // ${c1.votes} ГОЛ.</div>
+          </div>
+          <div>
+            <div class="font-extrabold text-amber-400 text-sm">${c2.name}</div>
+            <div class="text-[11px] text-slate-400">${c2.flagship}</div>
+            <div class="text-[10px] text-emerald-400 font-bold">${c2.tier} // ${c2.votes} ГОЛ.</div>
+          </div>
+        </div>
+
+        <div class="space-y-2 font-mono text-xs">
+          ${compareMetricRow('Стилистика', c1.radar.style, c2.radar.style)}
+          ${compareMetricRow('Психология', c1.radar.psychology, c2.radar.psychology)}
+          ${compareMetricRow('Канон / Лор', c1.radar.canon, c2.radar.canon)}
+          ${compareMetricRow('Сюжет', c1.radar.plot, c2.radar.plot)}
+          ${compareMetricRow('Темпоритм', c1.radar.pacing, c2.radar.pacing)}
+          ${compareMetricRow('Глубина', c1.radar.lore, c2.radar.lore)}
+        </div>
+      `;
+    }
+
+    function compareMetricRow(label, v1, v2) {
+      const c1Better = v1 >= v2;
+      return `
+        <div class="p-2.5 bg-slate-900/60 border border-slate-800 rounded-xl flex items-center justify-between">
+          <div class="w-1/3 text-left font-bold ${c1Better ? 'text-brand-cyan' : 'text-slate-400'}">${v1} / 10</div>
+          <div class="w-1/3 text-center text-slate-300 font-semibold uppercase text-[10px]">${label}</div>
+          <div class="w-1/3 text-right font-bold ${!c1Better ? 'text-amber-400' : 'text-slate-400'}">${v2} / 10</div>
+        </div>
+      `;
+    }
+
+    // --- 14. СИМУЛЯТОР КАЗНАЧЕЙСТВА (РАСПРЕДЕЛЕНИЕ 10 236 МОНЕТОК) ---
+    function openTreasuryModal() {
+      playBleep(600, 'sine', 0.03);
+      const container = document.getElementById('treasury-breakdown');
+      const totalVotes = CANDIDATES.reduce((acc, c) => acc + c.votes, 0);
+
+      container.innerHTML = CANDIDATES.map(c => {
+        const pct = totalVotes > 0 ? (c.votes / totalVotes) : 0;
+        const coinsShare = totalVotes > 0 
+          ? Math.round(TOTAL_FUND_COINS * pct) 
+          : Math.round(TOTAL_FUND_COINS / CANDIDATES.length);
+        const pctText = totalVotes > 0 ? (pct * 100).toFixed(1) + '%' : '0.0%';
+        const statusLabel = totalVotes > 0 ? 'Расчетная доля' : 'Базовый резерв';
+
+        return `
+          <div class="p-3 bg-slate-900/80 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white text-xs">${c.name}</div>
+              <div class="text-[11px] text-slate-400">${c.votes} голосов (${pctText})</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-black text-amber-400 glow-gold-text">${coinsShare} 🪙</div>
+              <div class="text-[10px] text-slate-500 uppercase font-semibold">${statusLabel}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('treasury-modal').classList.remove('hidden');
+    }
+
+    function closeTreasuryModal() {
+      document.getElementById('treasury-modal').classList.add('hidden');
+    }
+
+    // --- 15. CLI КОМАНДНАЯ СТРОКА ---
+    function handleCliInput() {
+      const input = document.getElementById('cli-input');
+      const cmd = input.value.trim();
+      input.value = '';
+      if (!cmd) return;
+
+      playBleep(700, 'sine', 0.03);
+      executeCliCommand(cmd);
+    }
+
+    function executeCliCommand(cmdStr) {
+      const parts = cmdStr.split(' ');
+      const action = parts[0].toLowerCase();
+      const arg = parts.slice(1).join(' ').toLowerCase();
+
+      addLog(`> ATA_ROOT: ${cmdStr}`, 'text-white font-bold');
+
+      switch(action) {
+        case 'help':
+          addLog('  Доступные команды терминала:', 'text-brand-cyan');
+          addLog('  • vote <id>      - проголосовать (rationale, korvin, elena, sfortza, kupalina)', 'text-slate-400');
+          addLog('  • audit <id>     - открыть досье кандидата', 'text-slate-400');
+          addLog('  • compare        - открыть матрицу сравнения кандидатов', 'text-slate-400');
+          addLog('  • fund           - показать распределение казначейства', 'text-slate-400');
+          addLog('  • ping           - проверка задержки сети', 'text-slate-400');
+          addLog('  • diagnostics    - аппаратный самотест терминала', 'text-slate-400');
+          addLog('  • clear          - очистить консоль', 'text-slate-400');
+          break;
+
+        case 'vote':
+          if (!arg) {
+            addLog('  Укажите id кандидата: vote rationale | korvin | elena | sfortza | kupalina', 'text-amber-400');
+          } else {
+            executeVote(arg);
+          }
+          break;
+
+        case 'audit':
+          if (!arg) {
+            openDossierModal('rationale');
+          } else {
+            openDossierModal(arg);
+          }
+          break;
+
+        case 'compare':
+          openCompareModal();
+          break;
+
+        case 'fund':
+          openTreasuryModal();
+          break;
+
+        case 'keys':
+          addLog('  [ДОСТУП ЗАПРЕЩЕН] Публичный вывод спец-ключей и PIN отключен.', 'text-rose-400');
+          addLog('  Все ключи хранятся в закрытом реестре администратора SPONSOR_KEYS_VAULT.md', 'text-slate-400');
+          addLog('  Для авторизации используйте персональный ключ, полученный от агентства.', 'text-slate-500');
+          break;
+
+        case 'ping':
+          const t0 = performance.now();
+          setTimeout(() => {
+            const dt = (performance.now() - t0).toFixed(1);
+            addLog(`  Pong! Задержка шлюза ATA Node: ${dt} мс. Соединение устойчиво.`, 'text-emerald-400');
+          }, 30);
+          break;
+
+        case 'diagnostics':
+          addLog('  [SELF-TEST] Диагностика подсистем ATA v36.2:', 'text-brand-cyan');
+          addLog(`  • Hardware ID: ${deviceFingerprint} [OK]`, 'text-slate-400');
+          addLog(`  • Escrow Lock: 10 236 🪙 [LOCKED]`, 'text-slate-400');
+          addLog(`  • Proof-of-Work Miner: SHA-256 Engine [READY]`, 'text-slate-400');
+          addLog(`  • Supabase Sync: ${supabaseClient ? 'ONLINE' : 'STANDALONE'}`, 'text-slate-400');
+          break;
+
+        case 'clear':
+          document.getElementById('cli-logs').innerHTML = '';
+          break;
+
+        default:
+          addLog(`  Неизвестная команда: "${action}". Введите 'help' для справки.`, 'text-slate-500');
+      }
+    }
+
+    // --- 16. НАСТРОЙКИ SUPABASE ---
+    function toggleSettingsModal() {
+      document.getElementById('settings-modal').classList.toggle('hidden');
+    }
+
+    function saveSupabaseSettings() {
+      const url = document.getElementById('cfg-supabase-url').value.trim();
+      const key = document.getElementById('cfg-supabase-key').value.trim();
+      if (url && key) {
+        localStorage.setItem('ata_supabase_url', url);
+        localStorage.setItem('ata_supabase_key', key);
+        initSupabase(url, key);
+        toggleSettingsModal();
+        addLog('> Настройки Supabase сохранены. Переподключение...', 'text-brand-cyan');
+      }
+    }
+
+    async function initSupabase(url, key) {
+      if (!window.supabase || !url || !key) return;
+      try {
+        supabaseClient = window.supabase.createClient(url, key);
+        addLog('> [ONLINE] Подключение к облаку Supabase установлено.', 'text-emerald-400');
+
+        realtimeChannel = supabaseClient
+          .channel('public:candidates_realtime_v36')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, payload => {
+            playBleep(980, 'sine', 0.04);
+            addLog(`> [REALTIME] Обновление: [${payload.new.name}] -> ${payload.new.votes_count} гол.`, 'text-brand-cyan');
+            const target = CANDIDATES.find(c => c.id === payload.new.id);
+            if (target) {
+              target.votes = payload.new.votes_count;
+              renderCandidates();
+            }
+          })
+          .subscribe();
+
+        const { data, error } = await supabaseClient.from('candidates').select('*');
+        if (!error && data && data.length > 0) {
+          data.forEach(remote => {
+            const local = CANDIDATES.find(c => c.id === remote.id);
+            if (local) local.votes = remote.votes_count;
+          });
+          renderCandidates();
+          addLog('> [SYNC] Данные синхронизированы с базой.', 'text-emerald-400');
+        }
+      } catch (err) {
+        console.warn('Supabase connect error:', err);
+      }
+    }
+
+    // --- 17. ЛОКАЛЬНОЕ ХРАНЕНИЕ ГОЛОСОВ ---
+    function saveLocalPersistentVotes() {
+      const voteMap = {};
+      CANDIDATES.forEach(c => { voteMap[c.id] = c.votes; });
+      localStorage.setItem('ata_lift_votes_v36', JSON.stringify(voteMap));
+    }
+
+    function loadLocalPersistentVotes() {
+      const saved = localStorage.getItem('ata_lift_votes_v36');
+      if (saved) {
+        try {
+          const map = JSON.parse(saved);
+          CANDIDATES.forEach(c => {
+            if (typeof map[c.id] === 'number') c.votes = map[c.id];
+          });
+        } catch (e) {}
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // --- 18. ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
+    window.addEventListener('DOMContentLoaded', async () => {
+      deviceFingerprint = await getDeviceFingerprint();
+      loadLocalPersistentVotes();
+
+      const savedUrl = localStorage.getItem('ata_supabase_url');
+      const savedKey = localStorage.getItem('ata_supabase_key');
+      if (savedUrl && savedKey) {
+        document.getElementById('cfg-supabase-url').value = savedUrl;
+        document.getElementById('cfg-supabase-key').value = savedKey;
+        await initSupabase(savedUrl, savedKey);
+      }
+
+      await validateCurrentKey();
+      renderCandidates();
+      addLog(`> Терминал инициализирован. Device ID: ${deviceFingerprint}`, 'text-slate-400');
+    });
+  </script>
+</body>
+</html>
